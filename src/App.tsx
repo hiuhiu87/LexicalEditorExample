@@ -23,7 +23,9 @@ import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
 
 function Placeholder() {
-  return <div className='editor-placeholder'>Enter somethings</div>;
+  return (
+    <div className='editor-placeholder'>Enter # to open suggest template</div>
+  );
 }
 
 const editorConfig: InitialConfigType = {
@@ -40,7 +42,7 @@ const editorConfig: InitialConfigType = {
     TableCellNode,
     TableRowNode,
     AutoLinkNode,
-    LinkNode
+    LinkNode,
   ],
   onError(error: Error) {
     throw error;
@@ -53,8 +55,8 @@ export default function App() {
       <div className='editor-container'>
         <ToolbarPlugin />
         <div className='editor-inner'>
-        <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
+          <RichTextPlugin
+            contentEditable={<ContentEditable className='editor-input' />}
             placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />

@@ -69,7 +69,7 @@ function Divider() {
   return <div className="divider" />;
 }
 
-function positionEditorElement(editor, rect) {
+function positionEditorElement(editor: any, rect: any) {
   if (rect === null) {
     editor.style.opacity = "0";
     editor.style.top = "-1000px";
@@ -83,7 +83,7 @@ function positionEditorElement(editor, rect) {
   }
 }
 
-function FloatingLinkEditor({ editor }) {
+function FloatingLinkEditor({ editor }: any) {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const mouseDownRef = useRef(false);
@@ -115,12 +115,16 @@ function FloatingLinkEditor({ editor }) {
     const rootElement = editor.getRootElement();
     if (
       selection !== null &&
+      // @ts-ignore
       !nativeSelection.isCollapsed &&
       rootElement !== null &&
+      // @ts-ignore
       rootElement.contains(nativeSelection.anchorNode)
     ) {
+      // @ts-ignore
       const domRange = nativeSelection.getRangeAt(0);
       let rect;
+      // @ts-ignore
       if (nativeSelection.anchorNode === rootElement) {
         let inner = rootElement;
         while (inner.firstElementChild != null) {
@@ -134,6 +138,7 @@ function FloatingLinkEditor({ editor }) {
       if (!mouseDownRef.current) {
         positionEditorElement(editorElem, rect);
       }
+      // @ts-ignore
       setLastSelection(selection);
     } else if (!activeElement || activeElement.className !== "link-input") {
       positionEditorElement(editorElem, null);
@@ -147,7 +152,7 @@ function FloatingLinkEditor({ editor }) {
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
+      editor.registerUpdateListener(({ editorState }: any) => {
         editorState.read(() => {
           updateLinkEditor();
         });
@@ -172,6 +177,7 @@ function FloatingLinkEditor({ editor }) {
 
   useEffect(() => {
     if (isEditMode && inputRef.current) {
+      // @ts-ignore
       inputRef.current.focus();
     }
   }, [isEditMode]);
@@ -222,12 +228,12 @@ function FloatingLinkEditor({ editor }) {
     </div>
   );
 }
-
+//@ts-ignore
 function Select({ onChange, className, options, value }) {
   return (
     <select className={className} onChange={onChange} value={value}>
       <option hidden={true} value="" />
-      {options.map((option) => (
+      {options.map((option: any) => (
         <option key={option} value={option}>
           {option}
         </option>
@@ -236,7 +242,7 @@ function Select({ onChange, className, options, value }) {
   );
 }
 
-function getSelectedNode(selection) {
+function getSelectedNode(selection: any) {
   const anchor = selection.anchor;
   const focus = selection.focus;
   const anchorNode = selection.anchor.getNode();
@@ -257,7 +263,7 @@ function BlockOptionsDropdownList({
   blockType,
   toolbarRef,
   setShowBlockOptionsDropDown
-}) {
+}: any) {
   const dropDownRef = useRef(null);
 
   useEffect(() => {
@@ -266,7 +272,9 @@ function BlockOptionsDropdownList({
 
     if (toolbar !== null && dropDown !== null) {
       const { top, left } = toolbar.getBoundingClientRect();
+      // @ts-ignore
       dropDown.style.top = `${top + 40}px`;
+      // @ts-ignore
       dropDown.style.left = `${left}px`;
     }
   }, [dropDownRef, toolbarRef]);
@@ -276,9 +284,10 @@ function BlockOptionsDropdownList({
     const toolbar = toolbarRef.current;
 
     if (dropDown !== null && toolbar !== null) {
-      const handle = (event) => {
+      const handle = (event: any) => {
         const target = event.target;
 
+        // @ts-ignore
         if (!dropDown.contains(target) && !toolbar.contains(target)) {
           setShowBlockOptionsDropDown(false);
         }
@@ -426,6 +435,7 @@ export default function ToolbarPlugin() {
     false
   );
   const [codeLanguage, setCodeLanguage] = useState("");
+  // @ts-ignore
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -488,6 +498,7 @@ export default function ToolbarPlugin() {
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
+        // @ts-ignore
         (_payload, newEditor) => {
           updateToolbar();
           return false;
@@ -515,7 +526,7 @@ export default function ToolbarPlugin() {
 
   const codeLanguges = useMemo(() => getCodeLanguages(), []);
   const onCodeLanguageSelect = useCallback(
-    (e) => {
+    (e: any) => {
       editor.update(() => {
         if (selectedElementKey !== null) {
           const node = $getNodeByKey(selectedElementKey);
@@ -541,6 +552,7 @@ export default function ToolbarPlugin() {
       <button
         disabled={!canUndo}
         onClick={() => {
+          // @ts-ignore
           editor.dispatchCommand(UNDO_COMMAND);
         }}
         className="toolbar-item spaced"
@@ -551,6 +563,7 @@ export default function ToolbarPlugin() {
       <button
         disabled={!canRedo}
         onClick={() => {
+          // @ts-ignore
           editor.dispatchCommand(REDO_COMMAND);
         }}
         className="toolbar-item"
@@ -569,6 +582,7 @@ export default function ToolbarPlugin() {
             aria-label="Formatting Options"
           >
             <span className={"icon block-type " + blockType} />
+            {/* @ts-ignore */}
             <span className="text">{blockTypeToBlockName[blockType]}</span>
             <i className="chevron-down" />
           </button>

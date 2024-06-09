@@ -1,12 +1,32 @@
 // htmlTemplates.ts
 export const htmlTemplate = {
-  Header: "<header>Header</header>",
-  "Header H1": "<h1>Header H1</h1>",
-  "Header H2": "<h2>Header H2</h2>",
-  Footer: "<footer>Footer</footer>",
-  Sidebar: "<aside>Aside</aside>",
-  "Main Content": "<main>Main</main>",
-  "Default": `<table style="border-collapse: collapse; width: 100%; border-width: 0px;" border="1"><colgroup><col style="width: 13.0751%;"><col style="width: 4.35835%;"><col style="width: 48.749%;"><col style="width: 33.8176%;"></colgroup>
+  Header: `
+    <header>
+      <h1>Header</h1>
+    </header>
+  `,
+  "Header H1": `
+    <h1>Header H1</h1>
+  `,
+  "Header H2": `
+    <h2>Header H2</h2>
+  `,
+  Footer: `
+    <footer>
+      <p>Footer</p>
+    </footer>
+  `,
+  Sidebar: `
+    <aside>
+      <h3>ba</h3>
+    </aside>
+  `,
+  "Main Content": `
+    <main>
+      <p>Main Content</p>
+      </main>
+  `,
+  Default: `<table style="border-collapse: collapse; width: 100%; border-width: 0px;" border="1"><colgroup><col style="width: 13.0751%;"><col style="width: 4.35835%;"><col style="width: 48.749%;"><col style="width: 33.8176%;"></colgroup>
 <tbody style="page-break-inside: avoid; page-break-after: auto;">
 <tr style="height: 23.3906px;">
 <td style="height: 57.1718px; border-width: 0px;" rowspan="3"><span style="font-family: 'times new roman', times, serif;">{{{InstitutionLogo}}}</span></td>
@@ -93,4 +113,12 @@ export const htmlTemplate = {
 </tbody>
 </table>
 <p><span style="font-size: 10pt; font-family: 'times new roman', times, serif;"><em>Mọi chi tiết xin li&ecirc;n hệ để được hỗ trợ: Số điện thoại<strong> {{{InstitutionPhone}}}</strong> / Email: <strong>{{{InstitutionEmail}}}</strong> . Xin cảm ơn!</em></span></p>`,
+};
+
+export const suggestionsTree = {
+  Header: ["Header Custom 1", "Header Custom 2"],
+  Footer: [],
+  Sidebar: [],
+  "Main Content": [],
+  Default: [],
 };

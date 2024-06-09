@@ -1,7 +1,7 @@
 import { $generateNodesFromDOM } from "@lexical/html";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  $getRoot,
+  // $getRoot,
   $getSelection,
   $insertNodes,
   $isRangeSelection,
@@ -9,22 +9,17 @@ import {
   KEY_DOWN_COMMAND,
 } from "lexical";
 import { useEffect, useRef, useState } from "react";
-import { htmlTemplate } from "../template/htmlTemplate";
-
-const suggestionsTree = {
-  Header: ["Header H1", "Header H2"],
-  Footer: [],
-  Sidebar: [],
-  "Main Content": [],
-  "Default": [],
-};
+import { htmlTemplate, suggestionsTree } from "../template/htmlTemplate";
 
 const AtSymbolPlugin = () => {
   const [editor] = useLexicalComposerContext();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSuggestion, setActiveSuggestion] = useState<string | null>(null);
-  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -39,7 +34,10 @@ const AtSymbolPlugin = () => {
               const range = nativeSelection.getRangeAt(0);
               const rect = range.getBoundingClientRect();
               // Adjust position to avoid overlapping the #
-              setPosition({ top: rect.bottom + window.scrollY + 5, left: rect.left + window.scrollX + 5 });
+              setPosition({
+                top: rect.bottom + window.scrollY + 5,
+                left: rect.left + window.scrollX + 20,
+              });
             }
             setSuggestions(Object.keys(suggestionsTree));
             setShowSuggestions(true);
@@ -54,6 +52,7 @@ const AtSymbolPlugin = () => {
 
     return () => {
       removeListener();
+      setPosition(null);
     };
   }, [editor]);
 
@@ -61,17 +60,26 @@ const AtSymbolPlugin = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        // Xóa dấu "#" khỏi vị trí hiện tại
-        selection.deleteCharacter();
+        const anchor = selection.anchor;
+        //@ts-ignore
+        const focus = selection.focus;
+        const textNode = anchor.getNode();
+        const textContent = textNode.getTextContent();
+        const offset = anchor.offset - 1;
+        const newTextContent =
+          textContent.substring(0, offset) + textContent.substring(offset + 1);
+        textNode.setTextContent(newTextContent);
+        selection.setTextNodeRange(textNode, offset, textNode, offset);
 
-        // Chèn template
         const parser = new DOMParser();
+        // @ts-ignore
         const doc = parser.parseFromString(htmlTemplate[template], "text/html");
         const nodes = $generateNodesFromDOM(editor, doc);
         $insertNodes(nodes);
       }
     });
     setShowSuggestions(false);
+    setPosition(null);
     setActiveSuggestion(null);
   };
 
@@ -84,8 +92,12 @@ const AtSymbolPlugin = () => {
       {showSuggestions && position && (
         <ul
           ref={suggestionsRef}
-          className="suggestions"
-          style={{ top: position.top, left: position.left, position: 'absolute' }}
+          className='suggestions'
+          style={{
+            top: position.top + "px",
+            left: position.left + "px",
+            position: "absolute",
+          }}
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -94,15 +106,24 @@ const AtSymbolPlugin = () => {
               onClick={() => insertTemplate(suggestion)}
             >
               {suggestion}
-              {activeSuggestion === suggestion && suggestionsTree[suggestion].length > 0 && (
-                <ul className="sub-suggestions">
-                  {suggestionsTree[suggestion].map((subSuggestion, subIndex) => (
-                    <li key={subIndex} onClick={() => insertTemplate(subSuggestion)}>
-                      {subSuggestion}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {activeSuggestion === suggestion &&
+                //@ts-ignore
+                suggestionsTree[suggestion].length > 0 && (
+                  <ul className='sub-suggestions'>
+                    {/* @ts-ignore */}
+                    {suggestionsTree[suggestion].map(
+                      //@ts-ignore
+                      (subSuggestion, subIndex) => (
+                        <li
+                          key={subIndex}
+                          onClick={() => insertTemplate(subSuggestion)}
+                        >
+                          {subSuggestion}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                )}
             </li>
           ))}
         </ul>
